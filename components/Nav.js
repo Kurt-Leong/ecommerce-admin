@@ -2,8 +2,10 @@ import Link from 'next/link'
 import React from 'react'
 
 function Nav() {
+  const inactiveLink = 'flex gap-1 p-1'
+  const activeLink = inactiveLink + ' bg-white text-blue-900 rounded-lg'
   return (
-    <aside className="text-white p-4">
+    <aside className="text-white p-4 pr-0">
       <Link href={'/'} className="flex gap-1 mb-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +24,7 @@ function Nav() {
         <span className="">Ecommerce Admin</span>
       </Link>
       <nav className="flex flex-col gap-2">
-        <Link href={'/'} className="flex gap-1">
+        <Link href={'/'} className={activeLink}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -39,7 +41,7 @@ function Nav() {
           </svg>
           Dashboard
         </Link>
-        <Link href={'/'} className="flex gap-1">
+        <Link href={'/'} className={`${inactiveLink}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -56,7 +58,7 @@ function Nav() {
           </svg>
           Products
         </Link>
-        <Link href={'/'} className="flex gap-1">
+        <Link href={'/'} className={inactiveLink}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -73,7 +75,7 @@ function Nav() {
           </svg>
           Orders
         </Link>
-        <Link href={'/'} className="flex gap-1">
+        <Link href={'/'} className={inactiveLink}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -96,7 +98,6 @@ function Nav() {
           Settings
         </Link>
       </nav>{' '}
-      gap-1
     </aside>
   )
 }
