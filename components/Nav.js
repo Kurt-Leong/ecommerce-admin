@@ -31,9 +31,7 @@ function Nav() {
       <nav className="flex flex-col gap-2">
         <Link
           href={'/dashboard'}
-          className={
-            pathname.includes('/dashboard') ? activeLink : inactiveLink
-          }
+          className={pathname.includes('/') ? activeLink : inactiveLink}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
