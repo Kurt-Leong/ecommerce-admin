@@ -1,43 +1,32 @@
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { useSession, signIn, signOut } from 'next-auth/react'
-import Nav from '@/components/Nav'
+
+import Layout from '@/components/Layout'
+import Image from 'next/image'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const { data: session } = useSession()
-  if (!session) {
-    return (
-      <div className={'bg-red-500 w-screen h-screen flex items-center'}>
-        <div className={`text-center w-full`}>
-          <button
-            onClick={() => signIn('google')}
-            className={`bg-white p-2 rounded-lg`}
-          >
-            Log in with Google
-          </button>
+  console.log(session)
+  if (!session) return
+  return (
+    <Layout>
+      <div className="text-blue-900 flex justify-between">
+        <h2>
+          Hello,<b>{session.user.name}</b>
+        </h2>
+        <div className="flex bg-gray-200 gap-1 text-black rounded-full ">
+          <Image
+            width="150"
+            height="150"
+            src={session?.user?.image}
+            alt={session?.user?.name}
+            className="w-9 h-9 rounded-full"
+          />
+          <span className="  px-2">{session?.user?.name}</span>
         </div>
       </div>
-    )
-  }
-  return (
-    <div className="bg-blue-900 min-h-screen">
-      <Nav />
-      <div>logged in {session.user.email}</div>
-    </div>
+    </Layout>
   )
 }
-
-// export default function Component() {
-//   if(session) {
-//     return <>
-//       Signed in as {session.user.email} <br/>
-//       <button onClick={() => signOut()}>Sign out</button>
-//     </>
-//   }
-//   return <>
-//     Not signed in <br/>
-//     <button onClick={() => signIn()}>Sign in</button>
-//   </>
-// }
