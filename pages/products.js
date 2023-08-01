@@ -1,5 +1,15 @@
 import Layout from '@/components/Layout'
+import Link from 'next/link'
 
 export default function Products() {
-  return <Layout>Products page here</Layout>
+  return (
+    <Layout>
+      <Link
+        href="/products/new"
+        className="bg-blue-900 text-white rounded-md py-1 px-2"
+      >
+        Add New Products
+      </Link>
+    </Layout>
+  )
 }
