@@ -19,11 +19,11 @@ function EditProductPage() {
       setLoading(false)
     })
   }, [id])
-
+  console.log(productInfo)
   return (
     <Layout>
       <h1>Edit Product</h1>
-      {loading ? <div>Loading...</div> : <ProductForm {...productInfo} />}
+      {loading ? <div>Loading...</div> : <ProductForm {...productInfo} />};
     </Layout>
   )
 }
