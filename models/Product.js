@@ -1,4 +1,3 @@
-// const { model, Schema, models } = require('mongoose')
 import { model, Schema, models } from 'mongoose'
 
 const ProductSchema = new Schema({

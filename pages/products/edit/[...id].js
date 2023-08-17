@@ -19,7 +19,7 @@ function EditProductPage() {
       setLoading(false)
     })
   }, [id])
-
+  console.log(productInfo)
   return (
     <Layout>
       <h1>Edit Product</h1>

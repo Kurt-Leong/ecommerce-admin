@@ -14,7 +14,7 @@ function ProductForm({
   const [price, setPrice] = useState(existingPrice || '')
 
   const router = useRouter()
-  console.log({ _id })
+  console.log(_id)
   async function saveProduct(ev) {
     ev.preventDefault()
     // try {
@@ -43,7 +43,7 @@ function ProductForm({
       try {
         await axios.put('/api/products', { ...data, _id })
         // Product created successfully
-        console.log('Product created successfully!')
+        console.log('Product edited successfully!')
 
         router.push('/products') // Redirect to the product page after creating the product
       } catch (error) {
