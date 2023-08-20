@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 import Spinner from './Spinner'
+import { ReactSortable } from 'react-sortablejs'
+import Image from 'next/image'
 
 function ProductForm({
   _id,
@@ -88,11 +90,17 @@ function ProductForm({
       //   method: 'POST',
       //   body: data,
       // })
+      console.log(res.data.links)
       setImages((oldImages) => {
         return [...oldImages, ...res.data.links]
       })
       setIsUploading(false)
     }
+  }
+
+  function updateImagesOrder(images) {
+    setImages(images)
+    // console.log('images is:', images[0])
   }
   return (
     <form onSubmit={saveProduct}>
@@ -106,12 +114,28 @@ function ProductForm({
       />
       <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-1">
-        {!!images?.length &&
-          images.map((link) => (
-            <div key={link} className="h-24">
-              <img src={link} alt="" className="rounded-lg" />
-            </div>
-          ))}
+        <ReactSortable
+          list={images}
+          setList={() => updateImagesOrder(images)}
+          className="flex flex-wrap gap-1"
+        >
+          {!!images?.length &&
+            images.map((link) => (
+              <div key={link} className="h-24">
+                <Image
+                  width="100"
+                  height="100"
+                  src={
+                    link ||
+                    'https://png.pngtree.com/png-clipart/20190918/ourmid/pngtree-load-the-3273350-png-image_1733730.jpg'
+                  }
+                  alt=""
+                  className="rounded-lg"
+                />
+              </div>
+            ))}
+        </ReactSortable>
+
         {isUploading && (
           <div className="w-24 p-1  flex items-center justify-center">
             <Spinner />
