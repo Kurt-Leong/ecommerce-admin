@@ -19,4 +19,9 @@ export default async function handle(req, res) {
     const parent = parentCategory !== '' ? parentCategory : null
     res.json(await Category.updateOne({ _id }, { name, parent }))
   }
+  if (method === 'DELETE') {
+    const { _id } = req.query
+    await Category.deleteOne({ _id })
+    res.json('ok')
+  }
 }
