@@ -10,14 +10,13 @@ export default async function handle(req, res) {
   }
   if (method === 'POST') {
     const { name, parentCategory } = req.body
-    const categoryDoc = await Category.create({ name, parent: parentCategory })
+    const parent = parentCategory !== '' ? parentCategory : null
+    const categoryDoc = await Category.create({ name, parent })
     res.json(categoryDoc)
   }
   if (method === 'PUT') {
     const { name, parentCategory, _id } = req.body
-    console.log('parents', parentCategory)
-    res.json(
-      await Category.updateOne({ _id }, { name, parent: parentCategory })
-    )
+    const parent = parentCategory !== '' ? parentCategory : null
+    res.json(await Category.updateOne({ _id }, { name, parent }))
   }
 }

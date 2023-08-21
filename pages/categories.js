@@ -20,6 +20,7 @@ export default function Categories() {
 
   function clearForm() {
     setName('')
+    setParentCategory('')
     fetechCategories()
   }
 
@@ -31,19 +32,18 @@ export default function Categories() {
         data._id = editedCategory._id
         console.log(editedCategory)
         await axios.put('/api/categories', { ...data })
-        clearForm()
-        setEditedCategory(false)
+        setEditedCategory(null)
       } catch (error) {
         console.error('something went wrong')
       }
     } else {
       try {
         await axios.post('/api/categories', { name, parentCategory })
-        clearForm()
       } catch (error) {
         console.error('something went wrong')
       }
     }
+    clearForm()
   }
   function editCategory(category) {
     setEditedCategory(category)
@@ -70,8 +70,10 @@ export default function Categories() {
         />
         <select
           className="mb-0"
-          onChange={(ev) => setParentCategory(ev.target.value)}
-          value={parentCategory}
+          onChange={(ev) =>
+            setParentCategory(ev.target.value === '0' ? null : ev.target.value)
+          }
+          value={parentCategory || '0'}
         >
           <option value="0">No parent category</option>
           {categories.length > 0 &&
