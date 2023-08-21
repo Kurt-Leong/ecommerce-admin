@@ -1,9 +1,9 @@
 import Layout from '@/components/Layout'
 
-export default function Products() {
+export default function Orders() {
   return (
     <Layout>
-      <h1>dashboard page here</h1>
+      <h1>Orders</h1>
     </Layout>
   )
 }
