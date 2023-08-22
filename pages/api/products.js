@@ -6,25 +6,31 @@ export default async function handler(req, res) {
   await mongooseConnect()
   if (method === 'GET') {
     if (req.query?.id) {
-      res.json(await Product.findOne({ _id: req.query.id }))
+      res.json(
+        await Product.findOne({ _id: req.query.id }).populate('category')
+      )
     } else {
       res.json(await Product.find())
     }
   }
   if (method === 'POST') {
-    const { title, description, price, images } = req.body
+    const { title, description, price, images, category } = req.body
     const productDoc = await Product.create({
       title,
       description,
       price,
       images,
+      category,
     })
     res.json(productDoc)
   }
   if (method === 'PUT') {
-    const { title, description, price, _id, images } = req.body
+    const { title, description, price, _id, images, category } = req.body
 
-    await Product.updateOne({ _id }, { title, description, price, images })
+    await Product.updateOne(
+      { _id },
+      { title, description, price, images, category }
+    )
     res.json(true)
   }
 

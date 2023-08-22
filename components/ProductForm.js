@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Spinner from './Spinner'
 import { ReactSortable } from 'react-sortablejs'
@@ -12,38 +12,36 @@ function ProductForm({
   description: existingDescription,
   price: existingPrice,
   images: existingImages,
+  category: assignCategory,
 }) {
   const [title, setTitle] = useState(existingTitle || '')
   const [description, setDescription] = useState(existingDescription || '')
   const [images, setImages] = useState(existingImages || [])
   const [price, setPrice] = useState(existingPrice || '')
   const [isUploading, setIsUploading] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [category, setCategory] = useState(assignCategory || '')
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        // Send a GET request to '/api/categories' using Axios
+        const result = await axios.get('/api/categories')
 
+        // Update the state with the fetched data
+        setCategories(result.data)
+      } catch (error) {
+        // Handle errors here, such as displaying an error message
+        console.error('Error fetching categories:', error)
+      }
+    }
+    fetchCategories()
+  }, [])
   const router = useRouter()
 
   async function saveProduct(ev) {
     ev.preventDefault()
-    // try {
-    //   const response = await fetch('/api/products', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ title, description, price }),
-    //   })
 
-    //   if (response.ok) {
-    //     // Product created successfully
-    //     console.log('Product created successfully!')
-    //   } else {
-    //     // Handle error response
-    //     console.error('Error creating product:', response.statusText)
-    //   }
-    // } catch (error) {
-    //   // Handle network or other errors
-    //   console.error('Error creating product:', error.message)
-    // }
-    const data = { title, description, price, images }
+    const data = { title, description, price, images, category }
     if (_id) {
       //update
       try {
@@ -112,6 +110,22 @@ function ProductForm({
         value={title}
         onChange={(ev) => setTitle(ev.target.value)}
       />
+      <label>Category</label>
+      <select
+        onChange={(ev) =>
+          setCategory(ev.target.value === '0' ? null : ev.target.value)
+        }
+        value={category || '0'}
+      >
+        <option value="0">Uncategorized</option>
+
+        {categories.length > 0 &&
+          categories.map((category) => (
+            <option key={category._id} value={category._id}>
+              {category.name}
+            </option>
+          ))}
+      </select>
       <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-1">
         <ReactSortable
