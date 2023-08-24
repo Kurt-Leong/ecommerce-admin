@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { withSwal } from 'react-sweetalert2'
 import EditProductPage from './products/edit/[...id]'
+import { set } from 'mongoose'
 
 function Categories({ swal }) {
   const [name, setName] = useState('')
@@ -26,11 +27,19 @@ function Categories({ swal }) {
     setName('')
     setParentCategory('')
     fetechCategories()
+    setProperties([])
   }
 
   async function saveCategory(ev) {
     ev.preventDefault()
-    const data = { name, parentCategory }
+    const data = {
+      name,
+      parentCategory,
+      properties: properties.map((p) => ({
+        name: p.name,
+        values: p.values.split(','),
+      })),
+    }
     if (editedCategory) {
       try {
         data._id = editedCategory._id
@@ -42,7 +51,11 @@ function Categories({ swal }) {
       }
     } else {
       try {
-        await axios.post('/api/categories', { name, parentCategory })
+        await axios.post('/api/categories', {
+          name,
+          parentCategory,
+          properties,
+        })
       } catch (error) {
         console.error('something went wrong')
       }
@@ -116,7 +129,7 @@ function Categories({ swal }) {
       <h1>Categories</h1>
       <label>
         {editedCategory
-          ? ` Edited Category ${editedCategory.name}`
+          ? `Edited Category ${editedCategory.name}`
           : 'Create New Category'}
       </label>
 
@@ -151,7 +164,7 @@ function Categories({ swal }) {
           <label className="block">Properties</label>
           <button
             onClick={addProperty}
-            type=" button"
+            type="button"
             className="btn-default text-sm mb-2 "
           >
             Add new property
@@ -194,7 +207,11 @@ function Categories({ swal }) {
           {editedCategory && (
             <button
               className="btn btn-default py-1"
-              onClick={() => setEditedCategory(null)}
+              onClick={() => {
+                setEditedCategory(null)
+                setName('')
+                setParentCategory('')
+              }}
             >
               Cancel
             </button>
