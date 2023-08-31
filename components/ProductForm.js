@@ -100,6 +100,14 @@ function ProductForm({
     // console.log('images is:', images)
     setImages(images)
   }
+
+  const propertiesToFill = []
+  if (categories.length > 0 && category) {
+    const catInfo = categories?.find(({ _id }) => _id === category)
+    console.log(catInfo)
+    propertiesToFill.push(...catInfo?.properties)
+    console.log(propertiesToFill)
+  }
   return (
     <form onSubmit={saveProduct}>
       <label>Products Name</label>
@@ -120,12 +128,14 @@ function ProductForm({
         <option value="0">Uncategorized</option>
 
         {categories.length > 0 &&
-          categories.map((category) => (
-            <option key={category._id} value={category._id}>
+          categories.map((category, index) => (
+            <option key={index} value={category._id}>
               {category.name}
             </option>
           ))}
       </select>
+      {propertiesToFill.length > 0 &&
+        propertiesToFill.map((p, index) => <div key={index}>{p.name}</div>)}
       <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-1">
         <ReactSortable

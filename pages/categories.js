@@ -26,11 +26,19 @@ function Categories({ swal }) {
     setName('')
     setParentCategory('')
     fetechCategories()
+    setProperties([])
   }
 
   async function saveCategory(ev) {
     ev.preventDefault()
-    const data = { name, parentCategory }
+
+    if (!name) {
+      console.error('Category name is required.')
+      return
+    }
+
+    const data = { name, parentCategory, properties }
+
     if (editedCategory) {
       try {
         data._id = editedCategory._id
@@ -38,13 +46,17 @@ function Categories({ swal }) {
         await axios.put('/api/categories', { ...data })
         setEditedCategory(null)
       } catch (error) {
-        console.error('something went wrong')
+        console.error('Error updating category:', error)
       }
     } else {
       try {
-        await axios.post('/api/categories', { name, parentCategory })
+        await axios.post('/api/categories', {
+          name,
+          parentCategory,
+          properties,
+        })
       } catch (error) {
-        console.error('something went wrong')
+        console.error('Error creating category:', error)
       }
     }
     clearForm()
@@ -54,6 +66,7 @@ function Categories({ swal }) {
     setName(category.name)
     console.log(category.parent?._id)
     setParentCategory(category.parent?._id)
+    setProperties(category.properties)
   }
 
   function deleteCategory(category) {
@@ -82,7 +95,7 @@ function Categories({ swal }) {
 
   function addProperty() {
     setProperties((prev) => {
-      return [...prev, { name: '', values: ' ' }]
+      return [...prev, { name: '', values: '' }]
     })
   }
 
@@ -105,9 +118,10 @@ function Categories({ swal }) {
 
   function removeProperty(indexToRemove) {
     setProperties((prev) => {
-      return [...prev].filter((p, pIndex) => {
+      const neePropArr = [...prev].filter((p, pIndex) => {
         return pIndex !== indexToRemove
       })
+      return neePropArr
     })
   }
   console.log(editedCategory)
@@ -151,14 +165,14 @@ function Categories({ swal }) {
           <label className="block">Properties</label>
           <button
             onClick={addProperty}
-            type=" button"
+            type="button"
             className="btn-default text-sm mb-2 "
           >
             Add new property
           </button>
           {properties.length > 0 &&
             properties.map((property, index) => (
-              <div key={index} className="flex gap=1 mb-2">
+              <div key={index} className="flex gap-1 mb-2">
                 <input
                   type="text"
                   value={property.name}
@@ -179,7 +193,7 @@ function Categories({ swal }) {
                 />
                 <button
                   onClick={() => removeProperty(index)}
-                  type="button "
+                  type="button"
                   className="btn-default"
                 >
                   Remove
@@ -188,13 +202,18 @@ function Categories({ swal }) {
             ))}
         </div>
         <div className="flex gap-1">
-          <button className="btn btn-primary py-1" type={'submit'}>
+          <button className="btn btn-primary py-1" type="submit">
             Save
           </button>
           {editedCategory && (
             <button
               className="btn btn-default py-1"
-              onClick={() => setEditedCategory(null)}
+              type="button"
+              onClick={() => {
+                setEditedCategory(null)
+                setName('')
+                setParentCategory('')
+              }}
             >
               Cancel
             </button>
