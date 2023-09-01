@@ -1,9 +1,8 @@
 import Layout from '@/components/Layout'
 import axios from 'axios'
-import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
 import { withSwal } from 'react-sweetalert2'
-import EditProductPage from './products/edit/[...id]'
 
 function Categories({ swal }) {
   const [name, setName] = useState('')
@@ -37,8 +36,15 @@ function Categories({ swal }) {
       return
     }
 
-    const data = { name, parentCategory, properties }
-
+    const data = {
+      name,
+      parentCategory,
+      properties: properties.map((p) => ({
+        name: p.name,
+        values: p.values.split(','),
+      })),
+    }
+    console.log('save is', data.properties)
     if (editedCategory) {
       try {
         data._id = editedCategory._id
@@ -51,9 +57,7 @@ function Categories({ swal }) {
     } else {
       try {
         await axios.post('/api/categories', {
-          name,
-          parentCategory,
-          properties,
+          ...data,
         })
       } catch (error) {
         console.error('Error creating category:', error)
@@ -64,9 +68,17 @@ function Categories({ swal }) {
   function editCategory(category) {
     setEditedCategory(category)
     setName(category.name)
-    console.log(category.parent?._id)
+
     setParentCategory(category.parent?._id)
-    setProperties(category.properties)
+    console.log('edit is', category.properties)
+    // setProperties(category.properties)
+
+    setProperties(
+      category.properties.map(({ name, values }) => ({
+        name,
+        values: values.join(','),
+      }))
+    )
   }
 
   function deleteCategory(category) {
@@ -100,7 +112,6 @@ function Categories({ swal }) {
   }
 
   function handlePropertyNameChange(index, property, newName) {
-    console.log(index, property, newName)
     setProperties((prev) => {
       const properties = [...prev]
       properties[index].name = newName
@@ -108,7 +119,6 @@ function Categories({ swal }) {
     })
   }
   function handlePropertyValuesChange(index, property, newValues) {
-    console.log(index, property, newValues)
     setProperties((prev) => {
       const properties = [...prev]
       properties[index].values = newValues
@@ -124,7 +134,7 @@ function Categories({ swal }) {
       return neePropArr
     })
   }
-  console.log(editedCategory)
+
   return (
     <Layout>
       <h1>Categories</h1>
@@ -213,6 +223,7 @@ function Categories({ swal }) {
                 setEditedCategory(null)
                 setName('')
                 setParentCategory('')
+                setProperties([])
               }}
             >
               Cancel

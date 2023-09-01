@@ -11,13 +11,22 @@ export default async function handle(req, res) {
   if (method === 'POST') {
     const { name, parentCategory, properties } = req.body
     const parent = parentCategory !== '' ? parentCategory : null
-    const categoryDoc = await Category.create({ name, parent, properties })
+    const categoryDoc = await Category.create({
+      name,
+      parent: parentCategory || undefined,
+      properties,
+    })
     res.json(categoryDoc)
   }
   if (method === 'PUT') {
     const { name, parentCategory, properties, _id } = req.body
     const parent = parentCategory !== '' ? parentCategory : null
-    res.json(await Category.updateOne({ _id }, { name, parent, properties }))
+    res.json(
+      await Category.updateOne(
+        { _id },
+        { name, parent: parentCategory || undefined, properties }
+      )
+    )
   }
   if (method === 'DELETE') {
     const { _id } = req.query
