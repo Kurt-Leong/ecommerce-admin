@@ -12,15 +12,28 @@ function ProductForm({
   description: existingDescription,
   price: existingPrice,
   images: existingImages,
-  category: assignCategory,
+  category: assignedCategory,
+  properties: assignedProperties,
 }) {
   const [title, setTitle] = useState(existingTitle || '')
   const [description, setDescription] = useState(existingDescription || '')
+  const [productProperties, setProductProperties] = useState(
+    assignedProperties || {}
+  )
   const [images, setImages] = useState(existingImages || [])
   const [price, setPrice] = useState(existingPrice || '')
   const [isUploading, setIsUploading] = useState(false)
   const [categories, setCategories] = useState([])
-  const [category, setCategory] = useState(assignCategory || '')
+
+  const [category, setCategory] = useState(assignedCategory || '0')
+  console.log('this is', assignedCategory)
+  console.log('categories is', categories)
+
+  console.log('category is', category)
+  categories.map((c) => {
+    console.log(`${c.name} is`, c._id)
+  })
+
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -41,7 +54,14 @@ function ProductForm({
   async function saveProduct(ev) {
     ev.preventDefault()
 
-    const data = { title, description, price, images, category }
+    const data = {
+      title,
+      description,
+      price,
+      images,
+      category,
+      properties: productProperties,
+    }
     if (_id) {
       //update
       try {
@@ -100,6 +120,45 @@ function ProductForm({
     // console.log('images is:', images)
     setImages(images)
   }
+  function setProductProp(propName, value) {
+    setProductProperties((prev) => {
+      const newProductProps = { ...prev }
+      newProductProps[propName] = value
+      return newProductProps
+    })
+  }
+
+  const propertiesToFill = []
+  // if (categories.length > 0 && category) {
+  //   let catInfo = categories?.find(({ _id }) => _id === category)
+  //   console.log(catInfo)
+  //   propertiesToFill.push(...catInfo?.properties)
+  //   console.log(propertiesToFill)
+  //   while (catInfo?.parent?.id) {
+  //     const parentCat = categories?.find(
+  //       ({ _id }) => _id === catInfo?.parent?.id
+  //     )
+  //     propertiesToFill.push(...parentCat.properties)
+  //     catInfo = parentCat
+  //   }
+  // }
+  if (categories.length > 0 && category) {
+    let catInfo = categories?.find(({ _id }) => _id === category)
+
+    if (catInfo && Array.isArray(catInfo.properties)) {
+      propertiesToFill.push(...catInfo.properties)
+    }
+
+    while (catInfo?.parent?.id) {
+      const parentCat = categories?.find(
+        ({ _id }) => _id === catInfo?.parent?.id
+      )
+      if (parentCat && Array.isArray(parentCat.properties)) {
+        propertiesToFill.push(...parentCat.properties)
+      }
+      catInfo = parentCat
+    }
+  }
   return (
     <form onSubmit={saveProduct}>
       <label>Products Name</label>
@@ -115,17 +174,33 @@ function ProductForm({
         onChange={(ev) =>
           setCategory(ev.target.value === '0' ? null : ev.target.value)
         }
-        value={category || '0'}
+        value={category}
       >
         <option value="0">Uncategorized</option>
 
         {categories.length > 0 &&
-          categories.map((category) => (
-            <option key={category._id} value={category._id}>
+          categories.map((category, index) => (
+            <option key={index} value={category._id}>
               {category.name}
             </option>
           ))}
       </select>
+      {propertiesToFill.length > 0 &&
+        propertiesToFill.map((p, index) => (
+          <div className="flex gap-1" key={index}>
+            <div>{p.name}</div>
+            <select
+              value={productProperties[p.name]}
+              onChange={(ev) => setProductProp(p.name, ev.target.value)}
+            >
+              {p.values.map((v, index) => (
+                <option key={index} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
       <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-1">
         <ReactSortable
