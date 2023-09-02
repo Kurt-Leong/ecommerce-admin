@@ -1,10 +1,15 @@
 import multiparty from 'multiparty'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
-const bucketName = 'kurt-next-ecommerce'
 import fs from 'fs'
 import mime from 'mime-types'
+import { isAdminRequest } from './auth/[...nextauth]'
+import { mongooseConnect } from '@/lib/mongoose'
+const bucketName = 'kurt-next-ecommerce'
 
 export default async function handle(req, res) {
+  await mongooseConnect()
+  await isAdminRequest(req, res)
+
   const form = new multiparty.Form()
   const { fields, files } = await new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
@@ -34,7 +39,7 @@ export default async function handle(req, res) {
         ContentType: mime.lookup(file.path),
       })
     )
-    const link = `https://${bucketName}.s3.amazonaws.com/${newFilename}`
+    const link = `https://${bucketName}.s3.amazonaws.com/{newFilename}`
     links.push(link)
   }
   res.json({ links })
