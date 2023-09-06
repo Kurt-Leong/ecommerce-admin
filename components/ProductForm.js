@@ -188,17 +188,19 @@ function ProductForm({
       {propertiesToFill.length > 0 &&
         propertiesToFill.map((p, index) => (
           <div className="flex gap-1" key={index}>
-            <div>{p.name}</div>
-            <select
-              value={productProperties[p.name]}
-              onChange={(ev) => setProductProp(p.name, ev.target.value)}
-            >
-              {p.values.map((v, index) => (
-                <option key={index} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
+            <label>{p.name[0].toUpperCase() + p.name.substring(1)}</label>
+            <div>
+              <select
+                value={productProperties[p.name]}
+                onChange={(ev) => setProductProp(p.name, ev.target.value)}
+              >
+                {p.values.map((v, index) => (
+                  <option key={index} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         ))}
       <label>Photos</label>
@@ -210,7 +212,10 @@ function ProductForm({
         >
           {!!images?.length &&
             images.map((link) => (
-              <div key={link} className="h-24">
+              <div
+                key={link}
+                className="h-24 bg-white p-1 shadow-md rounded-sm border border-gray-300 "
+              >
                 <img src={link} alt="" className="rounded-lg" />
               </div>
             ))}
@@ -220,7 +225,7 @@ function ProductForm({
             <Spinner />
           </div>
         )}
-        <label className="w-24 h-24 cursor-pointer border flex flex-col items-center justify-center text-sm text-gray-500 rounded-lg bg-gray-200">
+        <label className="w-24 h-24 cursor-pointer border flex flex-col items-center justify-center text-sm text-primary rounded-sm bg-white shadow-lg border border-primary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -235,7 +240,7 @@ function ProductForm({
               d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
             />
           </svg>
-          <div>Upload</div>
+          <div>Add image</div>
           <input type="file" className="hidden" onChange={uploadImages} />
         </label>
         {!images?.length && (

@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import Nav from '@/components/Nav'
 import { useState } from 'react'
+import Logo from './Logo'
 
 export default function Layout({ children }) {
   const { data: session } = useSession()
@@ -23,7 +24,7 @@ export default function Layout({ children }) {
   }
   return (
     <div className="bg-gray-200 min-h-screen ">
-      <div className="block md:hidden">
+      <div className="block sm:hidden flex items-center p-4 ">
         <button onClick={() => setShowNav(true)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -38,13 +39,14 @@ export default function Layout({ children }) {
             />
           </svg>
         </button>
+        <div className="flex grow justify-center mr-6">
+          <Logo />
+        </div>
       </div>
 
       <div className="flex">
         <Nav show={showNav} />
-        <div className="bg-white flex-grow mt-1 mr-1 rounded-lg p-4">
-          {children}
-        </div>
+        <div className=" flex-grow p-4">{children}</div>
       </div>
     </div>
   )

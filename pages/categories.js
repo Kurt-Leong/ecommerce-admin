@@ -247,10 +247,10 @@ function Categories({ swal }) {
                   <td>{category.name}</td>
                   <td>{category.parent?.name}</td>
                   <td>
-                    <div className="flex mr-1">
+                    <div className="flex mr-1 gap-2">
                       <button
                         onClick={() => editCategory(category)}
-                        className="btn btn-primary flex rounded-lg"
+                        className="btn btn-default flex rounded-lg"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +271,7 @@ function Categories({ swal }) {
                       <div>
                         <button
                           onClick={() => deleteCategory(category)}
-                          className="btn btn-primary flex"
+                          className="btn btn-red flex"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
